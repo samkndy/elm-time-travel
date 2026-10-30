@@ -32,6 +32,7 @@ initialState =
   , vy = 0
   , dir = Right
   , trace = []
+  , jumpCounter = 0
   }
 
 type XDirection = Left | Right
@@ -57,6 +58,9 @@ view computer mario =
     , marioSpriteName mario
         |> image 70 70
         |> move mario.x (b + 76 + mario.y)
+    , words black ("Jumps: " ++ String.fromInt mario.jumpCounter)
+      |> scale 5
+      |> move -400 (b + 600)
     ]
 
 marioSpriteName mario =
@@ -93,9 +97,16 @@ update computer mario =
         gravityApplied
       else
         min jumpCutoff gravityApplied  -- jump key released, limit speed to allow var height jumps
-
+    
     newX = mario.x + dt * vx
     newY = max 0 (mario.y + dt * vy)
+
+    newCounter =
+      if mario.y == 0 && computer.keyboard.up then
+        mario.jumpCounter + 1
+      else
+        mario.jumpCounter
+
   in
     { mario
       | x = newX
@@ -110,6 +121,7 @@ update computer mario =
           else
             mario.dir  -- face direction of last movement when standing still
       , trace = addPointUnlessDuplicate (newX, newY) mario.trace
+      , jumpCounter = newCounter
     }
 
 addPointUnlessDuplicate point path =
