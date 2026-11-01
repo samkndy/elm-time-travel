@@ -38,7 +38,7 @@ viewWithTimeTravel rawGame computer model =
                 |> fade opacity
         helpMessage =
             if model.paused then
-            "Press R to resume"
+            "Press R to resume OR drag the bar to time travel!"
             else
             "Press T to time travel"
     in
